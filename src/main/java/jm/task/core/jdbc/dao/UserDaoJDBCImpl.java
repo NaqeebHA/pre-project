@@ -4,6 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
@@ -84,7 +85,28 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        return null;
+        List<User> userList = new ArrayList<>();
+
+        try (Connection con = Util.getConnection()) {
+            try (Statement stmt = con.createStatement()) {
+                try (ResultSet resultSet = stmt.executeQuery("SELECT name, lastName, age FROM User;")) {
+                    while (resultSet.next()) {
+                        String name = resultSet.getString("name");
+                        String lastName = resultSet.getString("lastName");
+                        Byte age = resultSet.getByte("age");
+                        userList.add(new User(name, lastName, age));
+                    }
+                } catch (Exception e1) {
+                    throw e1;
+                }
+            } catch (Exception e2) {
+                throw e2;
+            }
+        } catch (Exception e3) {
+            e3.printStackTrace();
+        }
+
+        return userList;
     }
 
     public void cleanUsersTable() {
