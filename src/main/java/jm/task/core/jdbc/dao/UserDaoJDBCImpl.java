@@ -15,14 +15,10 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
         try (Connection con = Util.getConnection()) {
             try (Statement stmt = con.createStatement()) {
-                try (ResultSet resultSet = stmt.executeQuery("create table if not exists Users" +
-                                                                "(id int primary key auto_increment," +
-                                                                "name varchar(20), lastName varchar (20)," +
-                                                                "age int);")) {
-                    System.out.println("Table Users Created Successfully");
-                } catch (Exception e1) {
-                    throw e1;
-                }
+                stmt.execute("CREATE TABLE IF NOT EXISTS Users" +
+                                "(id int primary key auto_increment," +
+                                "name varchar(20), lastName varchar (20)," +
+                                "age int);");
             } catch (Exception e2) {
                 throw e2;
             }
@@ -34,11 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
         try (Connection con = Util.getConnection()) {
             try (Statement stmt = con.createStatement()) {
-                try (ResultSet resultSet = stmt.executeQuery("DROP TABLE Users")) {
-                    System.out.println("Table Users dropped successfully.");
-                } catch (Exception e1) {
-                    throw e1;
-                }
+                stmt.executeUpdate("DROP TABLE IF EXISTS Users");
             } catch (Exception e2) {
                 throw e2;
             }
@@ -49,16 +41,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         try (Connection con = Util.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO Users" +
-                                                        "VALUES (?, ?, ?);")) {
+            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO Users (name, lastName, age)" +
+                                                                "VALUES (?, ?, ?);")) {
                 stmt.setString(1, name);
                 stmt.setString(2, lastName);
                 stmt.setByte(3, age);
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    System.out.printf("User %s %s saved successfully.\n", name, lastName);
-                } catch (Exception e1) {
-                    throw e1;
-                }
+                stmt.executeUpdate();
             } catch (Exception e2) {
                 throw e2;
             }
@@ -71,11 +59,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Connection con = Util.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement("DELETE FROM Users WHERE id = ?;")) {
                 stmt.setLong(1, id);
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    System.out.printf("User with id = %n removed successfully.\n", id);
-                } catch (Exception e1) {
-                    throw e1;
-                }
+                stmt.executeUpdate();
             } catch (Exception e2) {
                 throw e2;
             }
@@ -89,7 +73,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (Connection con = Util.getConnection()) {
             try (Statement stmt = con.createStatement()) {
-                try (ResultSet resultSet = stmt.executeQuery("SELECT name, lastName, age FROM User;")) {
+                try (ResultSet resultSet = stmt.executeQuery("SELECT name, lastName, age FROM Users;")) {
                     while (resultSet.next()) {
                         String name = resultSet.getString("name");
                         String lastName = resultSet.getString("lastName");
@@ -112,11 +96,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         try (Connection con = Util.getConnection()) {
             try (Statement stmt = con.createStatement()) {
-                try (ResultSet resultSet = stmt.executeQuery("DELETE FROM Users;")) {
-                    System.out.println("Table Users cleaned successfully.");
-                } catch (Exception e1) {
-                    throw e1;
-                }
+                stmt.executeUpdate("DELETE FROM Users;");
             } catch (Exception e2) {
                 throw e2;
             }
