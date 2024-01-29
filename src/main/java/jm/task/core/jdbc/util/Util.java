@@ -23,7 +23,7 @@ public class Util {
         return DriverManager.getConnection(url, username, password);
     }
 
-    public static Session getHibernateSession() {
+    public static Session getHibernateSession() throws Exception {
         Properties prop = new Properties();
         prop.setProperty("connection.driver_class", driver);
         prop.setProperty("hibernate.connection.url", url);
