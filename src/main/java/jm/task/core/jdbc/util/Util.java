@@ -31,16 +31,13 @@ public class Util {
         prop.setProperty("hibernate.connection.password", password);
         prop.setProperty("hibernate.current_session_context_class", "thread");
         prop.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-
+        prop.setProperty("hibernate.hbm2ddl.auto", "update");
 
         Configuration cfg = new Configuration()
                 .addAnnotatedClass(User.class)
                 .setProperties(prop);
 
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(cfg.getProperties()).build();
-
-        SessionFactory sf = cfg.buildSessionFactory(serviceRegistry);
+        SessionFactory sf = cfg.buildSessionFactory();
         return sf.getCurrentSession();
     }
 }

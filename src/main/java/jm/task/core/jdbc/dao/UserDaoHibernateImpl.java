@@ -3,16 +3,11 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
@@ -20,10 +15,15 @@ public class UserDaoHibernateImpl implements UserDao {
     }
 
 
+
     @Override
     public void createUsersTable() {
         try (Session session = Util.getHibernateSession()) {
             session.beginTransaction();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS Users" +
+                                        "(id int primary key auto_increment," +
+                                        "name varchar(20), lastName varchar (20)," +
+                                        "age int)").executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e3) {
             e3.printStackTrace();
@@ -69,10 +69,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> userList = new ArrayList<>();
+        List<User> userList = new ArrayList<>(0);
         try (Session session = Util.getHibernateSession()) {
             session.beginTransaction();
-            Query<User> query = session.createQuery("FROM Users", User.class);
+            Query<User> query = session.createQuery("FROM User", User.class);
             userList = query.getResultList();
             session.getTransaction().commit();
         } catch (Exception e3) {
@@ -85,7 +85,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
         try (Session session = Util.getHibernateSession()) {
             session.beginTransaction();
-            Query<?> query = session.createQuery("DELETE FROM Users");
+            Query<?> query = session.createQuery("DELETE FROM User");
             query.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e3) {

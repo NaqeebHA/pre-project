@@ -26,7 +26,9 @@ public class Main {
         userService.saveUser(user4.getName(), user4.getLastName(), user4.getAge());
         System.out.printf("User with name - %s added to the database\n", user4.getName());
 
-        System.out.println(userService.getAllUsers().toString());
+        System.out.println("List of Users:\n" + userService.getAllUsers().toString());
+
+        userService.removeUserById(1L);
 
         userService.cleanUsersTable();
 
