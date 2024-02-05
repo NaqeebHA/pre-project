@@ -7,18 +7,17 @@ import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
 
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
 
     }
 
-
+    private final Util util = new Util();
 
     @Override
     public void createUsersTable() {
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             session.createSQLQuery("CREATE TABLE IF NOT EXISTS Users" +
                                         "(id int primary key auto_increment," +
@@ -32,7 +31,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS Users").executeUpdate();
             session.getTransaction().commit();
@@ -43,7 +42,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             session.saveOrUpdate(new User(name, lastName, age));
             session.getTransaction().commit();
@@ -54,7 +53,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             User userToRemoveById = session.get(User.class, id);
             if (userToRemoveById != null)
@@ -70,7 +69,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>(0);
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             Query<User> query = session.createQuery("FROM User", User.class);
             userList = query.getResultList();
@@ -83,7 +82,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        try (Session session = Util.getHibernateSession()) {
+        try (Session session = util.getHibernateSession()) {
             session.beginTransaction();
             Query<?> query = session.createQuery("DELETE FROM User");
             query.executeUpdate();

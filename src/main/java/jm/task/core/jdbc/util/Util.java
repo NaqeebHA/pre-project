@@ -2,9 +2,7 @@ package jm.task.core.jdbc.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 import jm.task.core.jdbc.model.User;
 
 import java.sql.Connection;
@@ -14,16 +12,20 @@ import java.util.Properties;
 
 public class Util {
 
-    private static final String driver = "com.mysql.cj.jdbc.Driver";
-    private static final String url = "jdbc:mysql://localhost:3306/task_1_1_2";
-    private static final String password = "0000";
-    private static final String username = "haji";
-    public static Connection getJdbcConnection() throws SQLException, ClassNotFoundException {
+    public Util() {
+
+    }
+
+    private final String driver = "com.mysql.cj.jdbc.Driver";
+    private final String url = "jdbc:mysql://localhost:3306/task_1_1_2";
+    private final String password = "0000";
+    private final String username = "haji";
+    public Connection getJdbcConnection() throws SQLException, ClassNotFoundException {
         Class.forName(driver);
         return DriverManager.getConnection(url, username, password);
     }
 
-    public static Session getHibernateSession() throws Exception {
+    public Session getHibernateSession() throws Exception {
         Properties prop = new Properties();
         prop.setProperty("connection.driver_class", driver);
         prop.setProperty("hibernate.connection.url", url);
